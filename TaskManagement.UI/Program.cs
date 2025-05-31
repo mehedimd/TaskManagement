@@ -1,4 +1,31 @@
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using TaskManagement.Infrastructure.DbContext;
+using TaskManagement.Infrastructure.Identity;
+using TaskManagement.Infrastructure.ServiceExtension;
+using TaskManagement.Services;
+using TaskManagement.Services.Interfaces;
+
 var builder = WebApplication.CreateBuilder(args);
+
+// DbContext setup
+builder.Services.AddDIServices(builder.Configuration);
+
+// Service DI
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ITaskItemService, TaskItemService>();
+
+// register identity with applicationUser
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>(option =>
+{
+    option.Password.RequiredLength = 4;
+    option.Password.RequireUppercase = false;
+    option.Password.RequireLowercase = false;
+    option.Password.RequireDigit = false;
+    option.Password.RequireNonAlphanumeric = false;
+    option.User.RequireUniqueEmail = true;
+
+}).AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -18,6 +45,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(

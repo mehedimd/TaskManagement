@@ -1,0 +1,35 @@
+﻿@model TaskManagement.Services.DTOs.Account.LoginDTO;
+
+@{
+    ViewData["Title"] = "Login";
+    Layout = "_Layout";
+}
+
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        <form asp-action="Login" method="post" id="loginForm">
+            <fieldset class="border p-3">
+                <legend class="text-center">Login Form</legend>
+
+                <div asp-validation-summary="All" class="text-danger"></div>
+                <div class="mb-3">
+                    <label asp-for="Email" class="form-label"></label>
+                    <input asp-for="Email" class="form-control" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Password" class="form-label"></label>
+                    <input asp-for="Password" type="password" class="form-control" />
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <button type="submit" class="btn btn-primary">Login</button>
+                    <a href="@Url.Action("Register", "Account")" class="btn btn-outline-secondary">New here? Register Now</a>
+                </div>
+            </fieldset>
+        </form>
+    </div>
+</div>
+
