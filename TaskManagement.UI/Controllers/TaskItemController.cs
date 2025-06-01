@@ -6,6 +6,7 @@ using TaskManagement.Services.Interfaces;
 
 namespace TaskManagement.UI.Controllers
 {
+    [Authorize]
     public class TaskItemController : Controller
     {
         #region Config
@@ -20,18 +21,16 @@ namespace TaskManagement.UI.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var result = await _service.GetAllTaskItemAsync();
-            var model = new TaskFilterDTO
-            {
-                Tasks = result
-            };
+            var filter = new TaskFilterDTO();
+            var model = await _service.GetAllAsQueryable(filter);
+ 
             return View(model);
         }
 
         [HttpPost]
-        public  IActionResult Index(TaskFilterDTO filter)
+        public async Task<IActionResult> Index(TaskFilterDTO filter)
         {
-            var model = _service.GetAllAsQueryable(filter);
+            var model = await _service.GetAllAsQueryable(filter);
             return View(model);
         }
         #endregion
@@ -112,7 +111,6 @@ namespace TaskManagement.UI.Controllers
         #endregion
 
         #region Delete
-        [HttpDelete]
         public async Task<IActionResult> Delete(int id)
         {
             var task = await _service.GetTaskItemAsync(id);

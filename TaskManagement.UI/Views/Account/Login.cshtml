@@ -11,7 +11,10 @@
             <fieldset class="border p-3">
                 <legend class="text-center">Login Form</legend>
 
-                <div asp-validation-summary="All" class="text-danger"></div>
+                @if (ViewBag.Error != null)
+                {
+                    <div class="alert alert-danger">@ViewBag.Error</div>
+                }
                 <div class="mb-3">
                     <label asp-for="Email" class="form-label"></label>
                     <input asp-for="Email" class="form-control" />

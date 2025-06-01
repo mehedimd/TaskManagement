@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 using TaskManagement.Core.Entities;
 using TaskManagement.Core.Interfaces;
 using TaskManagement.Services.DTOs.TaskItem;
@@ -64,9 +66,9 @@ namespace TaskManagement.Services
         #endregion
 
         #region Get AsQueryable
-        public TaskFilterDTO GetAllAsQueryable(TaskFilterDTO filter)
+        public async Task<TaskFilterDTO> GetAllAsQueryable(TaskFilterDTO filter)
         {
-            var query = _repo.GetQueryAble();
+            var query = _repo.GetQueryAble().Where(task => task.UserId == _userService.GetCurrentUserId);
 
             if (filter.IsCompleted.HasValue)
             {
@@ -75,16 +77,18 @@ namespace TaskManagement.Services
 
             query = filter.SortOrder == "desc" ? query.OrderByDescending(task => task.DueDate) : query.OrderBy(task => task.DueDate);
 
-            filter.Tasks = query.ToList();
+            filter.Tasks = await query.ToListAsync();
 
             return filter;
         }
         #endregion
 
         #region Get by Id
-        public async Task<TaskItem> GetTaskItemAsync(int taskId)
+        public async Task<TaskItemDTO> GetTaskItemAsync(int taskId)
         {
-            return await _repo.GetById(taskId);
+            var task = await _repo.GetCurrentUserTaskQueryable(_userService.GetCurrentUserId).Where(task => task.Id == taskId).FirstOrDefaultAsync();
+            var dto = _mapper.Map<TaskItemDTO>(task);
+            return dto;
         }
         #endregion
 
@@ -93,7 +97,7 @@ namespace TaskManagement.Services
         {
             if (dto != null)
             {
-                var taskItem = await _repo.GetById(dto.Id);
+                var taskItem = await _repo.GetCurrentUserTaskQueryable(_userService.GetCurrentUserId).Where(task => task.Id == dto.Id).FirstOrDefaultAsync();
                 if (taskItem != null)
                 {
                     taskItem.Title = dto.Title;
@@ -114,7 +118,7 @@ namespace TaskManagement.Services
         #region Toggle Completed
         public async Task ToggleIsCompletedAsync(int id)
         {
-            var task = await _repo.GetById(id);
+            var task = await _repo.GetCurrentUserTaskQueryable(_userService.GetCurrentUserId).Where(task => task.Id == id).FirstOrDefaultAsync();
 
             if (task != null)
             {

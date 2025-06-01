@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using TaskManagement.Core.Entities;
-using TaskManagement.Infrastructure.Identity;
+using TaskManagement.Core.Entities.Identity;
 
 namespace TaskManagement.Infrastructure.DbContext
 {
@@ -16,7 +16,7 @@ namespace TaskManagement.Infrastructure.DbContext
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer("Server=.;Database=TaskManagementDb;TrustServerCertificate=True;User Id = sa;Password = 123;");
+                optionsBuilder.UseSqlServer("Server=(localdb)\\MSSQLLocalDB;Database=TaskManagementDB;Trusted_Connection=True;MultipleActiveResultSets=True;");
             }
         }
     }

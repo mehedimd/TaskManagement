@@ -1,7 +1,8 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿
+using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 
-namespace TaskManagement.Infrastructure.Identity
+namespace TaskManagement.Core.Entities.Identity
 {
     public class ApplicationUser : IdentityUser
     {

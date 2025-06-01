@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using TaskManagement.Core.Entities.Identity;
 
 namespace TaskManagement.Core.Entities
 {
@@ -15,5 +16,8 @@ namespace TaskManagement.Core.Entities
 
         public bool IsCompleted { get; set; }
         public DateTime? DueDate { get; set; } // Optional
+
+        // Navigation property
+        public ApplicationUser User { get; set; }
     }
 }

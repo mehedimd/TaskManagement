@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using TaskManagement.Infrastructure.Identity;
+using TaskManagement.Core.Entities.Identity;
 using TaskManagement.Services.DTOs.Account;
 
 namespace TaskManagement.UI.Controllers
@@ -27,31 +27,39 @@ namespace TaskManagement.UI.Controllers
         [HttpPost]
         public async Task<IActionResult> Register(RegisterDTO model)
         {
-            if (ModelState.IsValid)
+            try
             {
-                var user = new ApplicationUser
+                if (ModelState.IsValid)
                 {
-                    FullName = model.FullName,
-                    UserName = model.Email,
-                    Email = model.Email
-                };
-
-
-                var result = await _userManager.CreateAsync(user, model.Password);
-
-                if (result.Succeeded)
-                {
-                    return RedirectToAction("Login", "Account");
-                }
-                else
-                {
-                    foreach (var error in result.Errors)
+                    var user = new ApplicationUser
                     {
-                        ModelState.AddModelError(string.Empty, error.Description);
+                        FullName = model.FullName,
+                        UserName = model.Email,
+                        Email = model.Email
+                    };
+
+
+                    var result = await _userManager.CreateAsync(user, model.Password);
+
+                    if (result.Succeeded)
+                    {
+                        return RedirectToAction("Login", "Account");
+                    }
+                    else
+                    {
+                        foreach (var error in result.Errors)
+                        {
+                            ModelState.AddModelError(string.Empty, error.Description);
+                        }
                     }
                 }
+                return View(model);
             }
-            return View(model);
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                return View(model);
+            }
         }
         #endregion
 
@@ -65,21 +73,29 @@ namespace TaskManagement.UI.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(LoginDTO model)
         {
-            if (ModelState.IsValid)
+            try
             {
-                var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, false, false);
+                if (ModelState.IsValid)
+                {
+                    var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, false, false);
 
-                if (result.Succeeded)
-                {
-                    return RedirectToAction("Index", "TaskItem");
+                    if (result.Succeeded)
+                    {
+                        return RedirectToAction("Index", "TaskItem");
+                    }
+                    else
+                    {
+                        ViewBag.Error = "Invalid username or password";
+                    }
                 }
-                else
-                {
-                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-                }
+
+                return View(model);
             }
-
-            return View(model);
+            catch (Exception)
+            {
+                ViewBag.Error = "An unexpected error occurred. Please try again.";
+                return View(model);
+            }
         }
         #endregion 
 
@@ -90,7 +106,6 @@ namespace TaskManagement.UI.Controllers
         {
             await _signInManager.SignOutAsync();
 
-            // Redirect to the login page after logout
             return RedirectToAction("Login", "Account");
         }
         #endregion
