@@ -8,11 +8,36 @@ namespace TaskManagement.UI.Controllers
 {
     public class TaskItemController : Controller
     {
+        #region Config
         private readonly ITaskItemService _service;
         public TaskItemController(ITaskItemService service)
         {
             _service = service;
         }
+        #endregion
+
+        #region Index
+        [HttpGet]
+        public async Task<IActionResult> Index()
+        {
+            var result = await _service.GetAllTaskItemAsync();
+            var model = new TaskFilterDTO
+            {
+                Tasks = result
+            };
+            return View(model);
+        }
+
+        [HttpPost]
+        public  IActionResult Index(TaskFilterDTO filter)
+        {
+            var model = _service.GetAllAsQueryable(filter);
+            return View(model);
+        }
+        #endregion
+
+        #region Create
+        [HttpGet]
         public IActionResult Create()
         {
             return View();
@@ -20,37 +45,82 @@ namespace TaskManagement.UI.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(AddTaskItemDTO model)
+        public async Task<IActionResult> Create(TaskItemDTO dto)
         {
-            if (ModelState.IsValid)
+            try
             {
-                await _service.AddTaskItemAsync(model);
-                return RedirectToAction("Index");
+                if (ModelState.IsValid)
+                {
+                    var isAdded = await _service.AddTaskItemAsync(dto);
+                    if (isAdded)
+                    {
+                        return RedirectToAction("Index");
+                    }
+                }
+                return View(dto);
             }
-            return View(model);
+            catch (Exception)
+            {
+
+                return RedirectToAction("Create", dto);
+            }
         }
+        #endregion
 
-
+        #region Edit
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
+
             var task = await _service.GetTaskItemAsync(id);
-            if (task == null)
-                return NotFound();
+            if (task == null) return NotFound();
 
             return View(task);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id,EditTaskItemDTO model)
+        public async Task<IActionResult> Edit(TaskItemDTO dto)
         {
-            if (ModelState.IsValid)
+            try
             {
-                await _service.UpdateTaskitemAsync(model);
-                return RedirectToAction("Index");
+                if (ModelState.IsValid)
+                {
+                    var isUpdated = await _service.UpdateTaskitemAsync(dto);
+                    if(isUpdated) return RedirectToAction("Index");
+                }
+                return View(dto);
             }
-            return View(model);
+            catch (Exception)
+            {
+
+                return View(dto);
+            }
         }
+        #endregion
+
+        #region Completed Toggle
+        [HttpPost]
+        public async Task<IActionResult> ToggleComplete(int id)
+        {
+            var task = await _service.GetTaskItemAsync(id);
+            if (task == null) return NotFound();
+
+            await _service.ToggleIsCompletedAsync(id);
+            return RedirectToAction("Index");
+        }
+        #endregion
+
+        #region Delete
+        [HttpDelete]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var task = await _service.GetTaskItemAsync(id);
+            if (task == null) return NotFound();
+
+            await _service.DeleteTaskItemAsync(id);
+            return RedirectToAction("Index");
+        }
+        #endregion
     }
 }

@@ -7,6 +7,7 @@ namespace TaskManagement.UI.Controllers
 {
     public class AccountController : Controller
     {
+        #region Config
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
@@ -14,7 +15,9 @@ namespace TaskManagement.UI.Controllers
             _userManager = userManager;
             _signInManager = signInManager;
         }
+        #endregion
 
+        #region Register
         [HttpGet]
         public IActionResult Register()
         {
@@ -50,7 +53,10 @@ namespace TaskManagement.UI.Controllers
             }
             return View(model);
         }
+        #endregion
 
+        #region Login
+        [HttpGet]
         public IActionResult Login()
         {
             return View();
@@ -61,7 +67,7 @@ namespace TaskManagement.UI.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password,false,false);
+                var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, false, false);
 
                 if (result.Succeeded)
                 {
@@ -75,5 +81,18 @@ namespace TaskManagement.UI.Controllers
 
             return View(model);
         }
+        #endregion 
+
+        #region Logout
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+
+            // Redirect to the login page after logout
+            return RedirectToAction("Login", "Account");
+        }
+        #endregion
     }
 }

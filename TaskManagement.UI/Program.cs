@@ -1,10 +1,10 @@
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using TaskManagement.Infrastructure.DbContext;
 using TaskManagement.Infrastructure.Identity;
 using TaskManagement.Infrastructure.ServiceExtension;
 using TaskManagement.Services;
 using TaskManagement.Services.Interfaces;
+using TaskManagement.Services.Map;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +26,9 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(option =>
     option.User.RequireUniqueEmail = true;
 
 }).AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
+
+// AutoMapper DI
+builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

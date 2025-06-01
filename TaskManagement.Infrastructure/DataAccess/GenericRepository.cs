@@ -20,7 +20,7 @@ namespace TaskManagement.Infrastructure.DataAccess
             return await _dbContext.Set<T>().ToListAsync();
         }
 
-        public IQueryable<T> GetAllQueryAbleAsync()
+        public IQueryable<T> GetQueryAble()
         {
             return  _dbContext.Set<T>().AsQueryable();
         }
