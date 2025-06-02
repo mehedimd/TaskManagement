@@ -24,4 +24,9 @@ A simple Task Management system built using ASP.NET Core 8 MVC, Entity Framework
 * Razor Views
 * Visual Studio 2022
 * Automapper
-* Clean Architecture
+* Clean Architecture (Core, Infrastructure, UI, Services)
+  
+# 🐞 Known Issues / Incomplete Features
+N/A  
+
+# ⚠️ Make sure TaskManagementDB is not already in your LocalDB. It will be created via migrations.
