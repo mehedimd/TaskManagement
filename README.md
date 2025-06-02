@@ -49,10 +49,13 @@ N/A
 # Mark Task as Completed
 ![task -2 mark completed](https://github.com/user-attachments/assets/9c4e0ea6-396d-4d32-8ff5-6720f0206a6a)
 
+# Apply Filter Completed and order by DueDate Desc
+![apply filter order by desc and not completed](https://github.com/user-attachments/assets/81020572-4dd1-4ed0-9a1f-9497fd5cbc19)
+
 # Edit Task
 ![Edit view task](https://github.com/user-attachments/assets/d04847d6-3524-40fa-819c-2323a9924e5c)
 
-# After edited task view with filter
+# After delete task 1
 ![edited task 3 and delete task 1](https://github.com/user-attachments/assets/5ddd4e93-f31e-4749-8240-97236468d8e2)
 
 # Every user see and manage only their own task
