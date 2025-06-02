@@ -58,10 +58,10 @@ namespace TaskManagement.UI.Controllers
                 }
                 return View(dto);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                return RedirectToAction("Create", dto);
+                ModelState.AddModelError(string.Empty, ex.Message);
+                return View(dto);
             }
         }
         #endregion
@@ -90,9 +90,9 @@ namespace TaskManagement.UI.Controllers
                 }
                 return View(dto);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
+                ModelState.AddModelError(string.Empty, ex.Message);
                 return View(dto);
             }
         }
@@ -100,6 +100,7 @@ namespace TaskManagement.UI.Controllers
 
         #region Completed Toggle
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> ToggleComplete(int id)
         {
             var task = await _service.GetTaskItemAsync(id);

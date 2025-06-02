@@ -85,15 +85,15 @@ namespace TaskManagement.UI.Controllers
                     }
                     else
                     {
-                        ViewBag.Error = "Invalid username or password";
+                        ModelState.AddModelError(string.Empty, "Invalid username or password.");
                     }
                 }
 
                 return View(model);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                ViewBag.Error = "An unexpected error occurred. Please try again.";
+                ModelState.AddModelError(string.Empty, ex.Message);
                 return View(model);
             }
         }
